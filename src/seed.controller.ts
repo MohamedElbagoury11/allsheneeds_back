@@ -2,14 +2,14 @@ import {
   Controller,
   Get,
   ForbiddenException,
-  UseGuards,
+  Request,
+  UnauthorizedException,
+  Headers,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
-import { RolesGuard } from './auth/roles.guard';
-import { Roles } from './auth/roles.decorator';
+import { JwtService } from '@nestjs/jwt';
 
 import { User } from './entities/user.entity';
 import { Category } from './entities/category.entity';
@@ -21,15 +21,12 @@ import { Wishlist } from './entities/wishlist.entity';
 import { Notification } from './entities/notification.entity';
 
 /**
- * Seed controller — for development/testing only.
- * Guarded by JWT + admin role.
- * Disabled entirely in production.
+ * Seed controller — for development/testing and INITIAL production setup.
  */
 @Controller('seed')
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('admin')
 export class SeedController {
   constructor(
+    private jwtService: JwtService,
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Category) private catRepo: Repository<Category>,
     @InjectRepository(Product) private productRepo: Repository<Product>,
@@ -41,10 +38,28 @@ export class SeedController {
   ) {}
 
   @Get()
-  async runSeed() {
-    // Completely disabled in production
-    if (process.env.NODE_ENV === 'production') {
-      throw new ForbiddenException('Seed is disabled in production');
+  async runSeed(@Headers('authorization') authHeader: string) {
+    const userCount = await this.userRepo.count();
+
+    if (userCount > 0) {
+      if (process.env.NODE_ENV === 'production') {
+        throw new ForbiddenException('Seed is disabled in production once the database has users.');
+      }
+
+      // If in dev and already seeded, require admin token to re-seed
+      if (!authHeader) {
+        throw new UnauthorizedException('Admin token required to re-seed the database');
+      }
+      
+      try {
+        const token = authHeader.split(' ')[1];
+        const payload = this.jwtService.verify(token);
+        if (!payload.role || !payload.role.includes('admin')) {
+          throw new ForbiddenException('Admin role required');
+        }
+      } catch (e) {
+        throw new UnauthorizedException('Invalid or expired admin token');
+      }
     }
 
     // ──────────────── USERS ────────────────

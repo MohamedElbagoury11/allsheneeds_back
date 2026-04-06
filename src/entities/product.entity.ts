@@ -17,6 +17,12 @@ export class Product {
 
   @Column('decimal', { precision: 10, scale: 2 })
   price: number;
+
+  @Column('decimal', { precision: 10, scale: 2, nullable: true })
+  discountPrice: number;
+
+  @Column({ default: false })
+  onSale: boolean;
   
   @Column({ nullable: true })
   categoryName: string; // The frontend expects category to be a string representing the name

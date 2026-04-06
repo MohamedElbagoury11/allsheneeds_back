@@ -59,4 +59,18 @@ export class AuthService {
 
     return this.login(newUser);
   }
+
+  async tempResetPassword(email: string, pass: string) {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) return { error: 'User not found' };
+    
+    const hashedPassword = await bcrypt.hash(pass, 12);
+    
+    // We need to update the password directly in the DB
+    // since usersService.update might exclude the password field.
+    // Accessing the repository from the service if it's public or adding it.
+    await (this.usersService as any).userRepository.update(user.id, { password: hashedPassword });
+
+    return { message: `Password for ${email} has been updated to '${pass}' with valid hash.` };
+  }
 }

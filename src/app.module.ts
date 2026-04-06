@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 // Entities
 import { User } from './entities/user.entity';
@@ -97,8 +99,9 @@ import { SeedController } from './seed.controller';
     WishlistsModule,
     AdminModule,
   ],
-  controllers: [SeedController],
+  controllers: [AppController, SeedController],
   providers: [
+    AppService,
     // Apply rate limiting globally to all routes
     {
       provide: APP_GUARD,

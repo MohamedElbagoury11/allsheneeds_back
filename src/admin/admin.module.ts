@@ -11,6 +11,7 @@ import { OrderItem } from '../entities/order_item.entity';
 import { OrdersModule } from '../orders/orders.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { CategoriesModule } from '../categories/categories.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CategoriesModule } from '../categories/categories.module';
     OrdersModule,
     NotificationsModule,
     CategoriesModule,
+    UsersModule,
   ],
   controllers: [AdminController, AnalyticsController],
   providers: [AnalyticsService],

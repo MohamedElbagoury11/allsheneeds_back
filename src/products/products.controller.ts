@@ -112,6 +112,8 @@ export class ProductsController {
       name: p.name,
       description: p.description,
       price: Number(p.price) || 0,
+      discountPrice: (p.discountPrice !== null && p.discountPrice !== undefined) ? Number(p.discountPrice) : undefined,
+      onSale: !!p.onSale,
       category: p.category?.name || p.categoryName || '',
       images: Array.isArray(p.images) ? p.images : [],
       rating: Number(p.rating) || 0,

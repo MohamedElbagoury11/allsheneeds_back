@@ -6,6 +6,7 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  IsBoolean,
   Min,
   MinLength,
 } from 'class-validator';
@@ -24,6 +25,15 @@ export class CreateProductDto {
   @IsNumber({}, { message: 'Price must be a number' })
   @Min(0.01, { message: 'Price must be greater than 0' })
   price: number;
+
+  @IsOptional()
+  @IsNumber({}, { message: 'Discount price must be a number' })
+  @Min(0, { message: 'Discount price must be greater than or equal to 0' })
+  discountPrice?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  onSale?: boolean;
 
   @IsString()
   @IsNotEmpty()

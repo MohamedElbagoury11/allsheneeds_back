@@ -73,4 +73,33 @@ export class AuthService {
 
     return { message: `Password for ${email} has been updated to '${pass}' with valid hash.` };
   }
+
+  async createDefaultAdmin() {
+    const email = 'nada@allsheneeds.com';
+    const password = 'nada2025';
+    const existing = await this.usersService.findByEmail(email);
+    
+    if (existing) {
+      if (existing.role === 'admin') {
+        return { message: 'Admin already exists', user: { email: existing.email, role: existing.role } };
+      }
+      // Upgrade existing user to admin
+      await (this.usersService as any).userRepository.update(existing.id, { role: 'admin' });
+      return { message: 'Existing user promoted to admin', email };
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+    await this.usersService.create({
+      name: 'Admin',
+      email,
+      password: hashedPassword,
+      role: 'admin',
+    });
+
+    return { 
+      message: 'Initial admin created successfully!', 
+      credentials: { email, password },
+      note: 'Please change your password immediately after logging in.'
+    };
+  }
 }

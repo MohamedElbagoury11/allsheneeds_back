@@ -37,7 +37,7 @@ async function bootstrap() {
   // ── Auto-exclude @Exclude() fields (e.g. password) ─────────────
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 8080;
   
   // Explicitly binding to 0.0.0.0 is required for Railway
   await app.listen(port, '0.0.0.0');

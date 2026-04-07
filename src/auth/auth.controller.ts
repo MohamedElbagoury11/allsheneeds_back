@@ -43,4 +43,9 @@ export class AuthController {
   async tempReset(@Query('email') email: string, @Query('password') pass: string) {
     return this.authService.tempResetPassword(email, pass);
   }
+
+  @Post('setup-admin')
+  async setupAdmin() {
+    return this.authService.createDefaultAdmin();
+  }
 }

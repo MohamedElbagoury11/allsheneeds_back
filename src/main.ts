@@ -37,6 +37,10 @@ async function bootstrap() {
   // ── Auto-exclude @Exclude() fields (e.g. password) ─────────────
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
-  await app.listen(process.env.PORT || 3000, '0.0.0.0');
+  const port = process.env.PORT || 3000;
+  await app.listen(port, '0.0.0.0');
+  
+  const logger = new (require('@nestjs/common').Logger)('Bootstrap');
+  logger.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

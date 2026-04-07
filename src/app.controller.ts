@@ -14,4 +14,9 @@ export class AppController {
   testRoute(): string {
     return 'Backend is alive and reflecting new changes!';
   }
+  @Get('health')
+  health(): string {
+    return 'Backend is healthy!';
+  }
+
 }

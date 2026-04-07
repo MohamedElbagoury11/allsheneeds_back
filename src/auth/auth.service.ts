@@ -1,7 +1,7 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
+import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   /**
    * Validates user credentials.
@@ -63,9 +63,9 @@ export class AuthService {
   async tempResetPassword(email: string, pass: string) {
     const user = await this.usersService.findByEmail(email);
     if (!user) return { error: 'User not found' };
-    
+
     const hashedPassword = await bcrypt.hash(pass, 12);
-    
+
     // We need to update the password directly in the DB
     // since usersService.update might exclude the password field.
     // Accessing the repository from the service if it's public or adding it.
@@ -78,7 +78,7 @@ export class AuthService {
     const email = 'nada@allsheneeds.com';
     const password = 'nada2025';
     const existing = await this.usersService.findByEmail(email);
-    
+
     if (existing) {
       if (existing.role === 'admin') {
         return { message: 'Admin already exists', user: { email: existing.email, role: existing.role } };
@@ -96,8 +96,8 @@ export class AuthService {
       role: 'admin',
     });
 
-    return { 
-      message: 'Initial admin created successfully!', 
+    return {
+      message: 'Initial admin created successfully!',
       credentials: { email, password },
       note: 'Please change your password immediately after logging in.'
     };

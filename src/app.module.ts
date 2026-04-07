@@ -56,6 +56,7 @@ import { SeedController } from './seed.controller';
         username: config.get<string>('DB_USERNAME', 'root'),
         password: config.get<string>('DB_PASSWORD', ''),
         database: config.get<string>('DB_NAME', 'mystore_db'),
+        sync:true,
         ssl:{
       rejectUnauthorized: false,
     },

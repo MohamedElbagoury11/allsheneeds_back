@@ -59,6 +59,7 @@ import { SeedController } from './seed.controller';
         ssl:{
       rejectUnauthorized: false,
     },
+        connectTimeout: 10000,
         entities: [
           User,
           Category,

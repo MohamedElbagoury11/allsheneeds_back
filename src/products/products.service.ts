@@ -21,7 +21,7 @@ export class ProductsService {
 
   async create(createProductDto: any): Promise<Product> {
     try {
-      const { category: catName, ...rest } = createProductDto;
+      const { categoryName: catName, ...rest } = createProductDto;
       
       const newProduct = this.productRepository.create(rest as DeepPartial<Product>);
       
@@ -59,7 +59,7 @@ export class ProductsService {
 
   async update(id: string, updateProductDto: any): Promise<Product> {
     const product = await this.findOne(id);
-    const { category: catName, ...rest } = updateProductDto;
+    const { categoryName: catName, ...rest } = updateProductDto;
     
     this.productRepository.merge(product, rest as DeepPartial<Product>);
 

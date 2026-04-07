@@ -38,9 +38,14 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const port = process.env.PORT || 3000;
+  
+  // Explicitly binding to 0.0.0.0 is required for Railway
   await app.listen(port, '0.0.0.0');
   
   const logger = new (require('@nestjs/common').Logger)('Bootstrap');
-  logger.log(`Application is running on: ${await app.getUrl()}`);
+  const server = app.getHttpServer();
+  const address = server.address();
+  
+  logger.log(`Application is listening on: ${JSON.stringify(address)}`);
 }
 bootstrap();

@@ -29,6 +29,8 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { WishlistsModule } from './wishlists/wishlists.module';
 import { AdminModule } from './admin/admin.module';
 import { SeedController } from './seed.controller';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -104,6 +106,8 @@ import { SeedController } from './seed.controller';
     ReviewsModule,
     WishlistsModule,
     AdminModule,
+    CloudinaryModule,
+    UploadModule,
   ],
   controllers: [AppController, SeedController],
   providers: [

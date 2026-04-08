@@ -56,7 +56,7 @@ import { SeedController } from './seed.controller';
         username: config.get<string>('DB_USERNAME', 'root'),
         password: config.get<string>('DB_PASSWORD', ''),
         database: config.get<string>('DB_NAME', 'mystore_db'),
-        sync:true,
+        synchronize:true,
         ssl:{
       rejectUnauthorized: false,
     },
@@ -74,7 +74,7 @@ import { SeedController } from './seed.controller';
           Notification,
         ],
         // Set to false in production and use migrations instead
-        synchronize: config.get<string>('NODE_ENV') !== 'production',
+     //   synchronize: config.get<string>('NODE_ENV') !== 'production',
       }),
   
       inject: [ConfigService],

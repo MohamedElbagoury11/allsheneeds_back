@@ -10,16 +10,31 @@ async function bootstrap() {
   app.use(helmet());
 
   // ── CORS ────────────────────────────────────────────────────────
-  // Origins are read from the ALLOWED_ORIGINS env var (comma-separated)
   const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
     .split(',')
     .map((o) => o.trim())
     .filter(Boolean);
 
+  // Add the Netlify domain explicitly as a fallback to ensure it's always allowed in production
+  if (process.env.NODE_ENV === 'production' && !allowedOrigins.includes('https://allsheneeds.netlify.app')) {
+    allowedOrigins.push('https://allsheneeds.netlify.app');
+    allowedOrigins.push('https://www.allsheneeds.netlify.app');
+  }
+
   app.enableCors({
-    origin: allowedOrigins.length > 0 ? allowedOrigins : false,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.some(o => origin.startsWith(o))) {
+        callback(null, true);
+      } else {
+        console.warn(`CORS blocked for origin: ${origin}. Allowed: ${allowedOrigins.join(', ')}`);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
     credentials: true,
   });
 

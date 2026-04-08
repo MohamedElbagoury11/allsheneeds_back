@@ -17,10 +17,26 @@ export class CreateProductDto {
   @MinLength(2)
   name: string;
 
+  @IsOptional()
+  @IsString()
+  nameEn?: string;
+
+  @IsOptional()
+  @IsString()
+  nameAr?: string;
+
   @IsString()
   @IsNotEmpty()
   @MinLength(10)
   description: string;
+
+  @IsOptional()
+  @IsString()
+  descriptionEn?: string;
+
+  @IsOptional()
+  @IsString()
+  descriptionAr?: string;
 
   @IsNumber({}, { message: 'Price must be a number' })
   @Min(0.01, { message: 'Price must be greater than 0' })

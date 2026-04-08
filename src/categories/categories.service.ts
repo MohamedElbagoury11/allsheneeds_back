@@ -13,8 +13,9 @@ export class CategoriesService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
-  async create(createCategoryDto: DeepPartial<Category>): Promise<Category> {
-    const category = this.categoryRepository.create(createCategoryDto);
+  async create(createCategoryDto: any): Promise<Category> {
+    if (createCategoryDto.nameEn) createCategoryDto.name = createCategoryDto.nameEn;
+    const category = this.categoryRepository.create(createCategoryDto as DeepPartial<Category>);
     return this.categoryRepository.save(category);
   }
 
@@ -47,6 +48,7 @@ export class CategoriesService {
   }
 
   async update(id: string, updateCategoryDto: any): Promise<Category> {
+    if (updateCategoryDto.nameEn) updateCategoryDto.name = updateCategoryDto.nameEn;
     const category = await this.findOne(id);
     this.categoryRepository.merge(category, updateCategoryDto);
     return this.categoryRepository.save(category);

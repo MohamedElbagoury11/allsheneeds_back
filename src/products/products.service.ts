@@ -22,6 +22,9 @@ export class ProductsService {
   async create(createProductDto: any): Promise<Product> {
     try {
       const { categoryName: catName, ...rest } = createProductDto;
+
+      if (rest.nameEn) rest.name = rest.nameEn;
+      if (rest.descriptionEn) rest.description = rest.descriptionEn;
       
       const newProduct = this.productRepository.create(rest as DeepPartial<Product>);
       
@@ -60,6 +63,9 @@ export class ProductsService {
   async update(id: string, updateProductDto: any): Promise<Product> {
     const product = await this.findOne(id);
     const { categoryName: catName, ...rest } = updateProductDto;
+
+    if (rest.nameEn) rest.name = rest.nameEn;
+    if (rest.descriptionEn) rest.description = rest.descriptionEn;
     
     this.productRepository.merge(product, rest as DeepPartial<Product>);
 

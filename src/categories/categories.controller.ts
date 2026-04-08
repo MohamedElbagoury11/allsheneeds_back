@@ -14,6 +14,8 @@ export class CategoriesController {
     return categories.map(c => ({
       id: c.id,
       name: c.name,
+      nameEn: c.nameEn,
+      nameAr: c.nameAr,
       image: c.image || 'https://via.placeholder.com/150',
       count: Number(c.count) || 0,
     }));

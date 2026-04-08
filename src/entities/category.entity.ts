@@ -10,6 +10,12 @@ export class Category {
   name: string;
 
   @Column({ nullable: true })
+  nameEn: string;
+
+  @Column({ nullable: true })
+  nameAr: string;
+
+  @Column({ nullable: true })
   slug: string;
 
   @Column({ nullable: true })

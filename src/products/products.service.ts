@@ -84,4 +84,27 @@ export class ProductsService {
     const product = await this.findOne(id);
     await this.productRepository.softRemove(product);
   }
+
+  async recalculateRating(productId: string): Promise<void> {
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+      relations: ['reviews'],
+    });
+
+    if (!product) return;
+
+    const approvedReviews = product.reviews.filter(r => r.isApproved);
+    const count = approvedReviews.length;
+    
+    if (count === 0) {
+      product.rating = 0;
+      product.reviewsCount = 0;
+    } else {
+      const sum = approvedReviews.reduce((acc, r) => acc + r.rating, 0);
+      product.rating = Number((sum / count).toFixed(1));
+      product.reviewsCount = count;
+    }
+
+    await this.productRepository.save(product);
+  }
 }

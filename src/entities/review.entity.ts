@@ -13,6 +13,9 @@ export class Review {
   @Column()
   comment: string;
 
+  @Column({ default: false })
+  isApproved: boolean;
+
   @Column('int')
   rating: number;
 

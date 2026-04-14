@@ -121,6 +121,15 @@ export class ProductsController {
       stock: p.stock || 0,
       specifications: p.specifications || {},
       createdAt: p.createdAt,
+      reviews: (p.reviews || [])
+        .filter(r => r.isApproved)
+        .map(r => ({
+          id: r.id,
+          title: r.title,
+          comment: r.comment,
+          rating: r.rating,
+          userName: r.user?.name || 'Anonymous'
+        }))
     };
   }
 }

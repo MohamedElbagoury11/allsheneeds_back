@@ -48,6 +48,9 @@ export class OrdersService {
         if (!product) {
           return null;
         }
+        if (product.stock <= 0) {
+          throw new BadRequestException(`Product out of stock`);
+        }
         return this.orderItemRepository.create({
           order: savedOrder,
           product: product,
@@ -134,6 +137,19 @@ export class OrdersService {
         if (productId) {
           await this.productRepository.decrement({ id: productId }, 'stock', qty);
         }
+      }
+    }
+
+    // Notify user of status change
+    if (updateOrderDto.status && updateOrderDto.status !== previousStatus) {
+      if (order.user) {
+        const notification = this.notificationRepository.create({
+          user: order.user,
+          type: 'order_status',
+          title: 'Order Status Updated',
+          message: `Your order ${order.id} status has been updated to ${updateOrderDto.status}.`
+        });
+        await this.notificationRepository.save(notification);
       }
     }
 

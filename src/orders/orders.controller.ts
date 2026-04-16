@@ -84,8 +84,11 @@ export class OrdersController {
         o.items?.map((item: any) => ({
           productId: item.product?.id,
           name: item.product?.name,
-          quantity: item.quantity,
-          price: item.price,
+          nameAr: item.product?.nameAr || item.product?.name,
+          nameEn: item.product?.nameEn || item.product?.name,
+          images: item.product?.images || [],
+          quantity: Number(item.quantity) || 1,
+          price: Number(item.price) || 0,
         })) || [],
     };
   }

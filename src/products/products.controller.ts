@@ -18,8 +18,13 @@ export class ProductsController {
     @Query('search') search?: string,
     @Query('minPrice') minPrice?: number,
     @Query('maxPrice') maxPrice?: number,
+    @Query('includeOutOfStock') includeOutOfStock?: string,
   ) {
     let products = await this.productsService.findAll();
+    
+    if (includeOutOfStock !== 'true') {
+      products = products.filter(p => (p.stock || 0) > 0);
+    }
     
     if (category) {
       const catLower = category.trim().toLowerCase();

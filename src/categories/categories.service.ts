@@ -19,16 +19,20 @@ export class CategoriesService {
     return this.categoryRepository.save(category);
   }
 
-  async findAll(): Promise<any[]> {
+  async findAll(includeOutOfStock: boolean = false): Promise<any[]> {
     const categories = await this.categoryRepository.find();
     
     // For each category, count products where categoryId matches or categoryName matches
     const categoriesWithCount = await Promise.all(categories.map(async (c) => {
       // Use query builder for more precise matching (case-insensitive and trimmed if needed)
-      const count = await this.productRepository.createQueryBuilder('product')
-        .where('product.categoryId = :id', { id: c.id })
-        .orWhere('LOWER(TRIM(product.categoryName)) = LOWER(TRIM(:name))', { name: c.name })
-        .getCount();
+      const query = this.productRepository.createQueryBuilder('product')
+        .where('(product.categoryId = :id OR LOWER(TRIM(product.categoryName)) = LOWER(TRIM(:name)))', { id: c.id, name: c.name });
+      
+      if (!includeOutOfStock) {
+        query.andWhere('product.stock > 0');
+      }
+      
+      const count = await query.getCount();
         
       return { ...c, count };
     }));

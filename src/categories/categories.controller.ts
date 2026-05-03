@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
@@ -9,8 +9,8 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
-  async findAll() {
-    const categories = await this.categoriesService.findAll();
+  async findAll(@Query('includeOutOfStock') includeOutOfStock?: string) {
+    const categories = await this.categoriesService.findAll(includeOutOfStock === 'true');
     return categories.map(c => ({
       id: c.id,
       name: c.name,

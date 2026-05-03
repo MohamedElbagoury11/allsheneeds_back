@@ -28,6 +28,11 @@ export class NotificationsController {
     return notifications.map(this.mapNotification);
   }
 
+  @Patch('mark-all-read')
+  async markAllRead(@Request() req) {
+    return this.notificationsService.markAllAsRead(req.user.userId);
+  }
+
   @Patch(':id/read')
   async markAsRead(@Param('id') id: string) {
     return this.notificationsService.update(Number(id), { read: true });

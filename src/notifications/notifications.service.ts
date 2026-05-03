@@ -40,4 +40,7 @@ export class NotificationsService {
     const notification = await this.findOne(id);
     await this.notificationRepository.remove(notification);
   }
+  async markAllAsRead(userId: string): Promise<void> {
+    await this.notificationRepository.update({ user: { id: userId } as any }, { read: true });
+  }
 }
